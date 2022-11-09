@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".view.DetailFragment">
 
-    <!-- TODO: Update blank fragment layout -->
+ <!--   &lt;!&ndash; TODO: Update blank fragment layout &ndash;&gt;
 
     <TextView
         android:layout_width="match_parent"
@@ -24,6 +24,6 @@
         android:clickable="true"
         android:src="@drawable/ic_list"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent" />-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>
