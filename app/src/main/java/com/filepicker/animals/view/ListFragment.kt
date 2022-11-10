@@ -6,9 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
-import androidx.navigation.Navigation
 import androidx.recyclerview.widget.GridLayoutManager
 import com.filepicker.animals.R
 import com.filepicker.animals.model.Animal
@@ -62,6 +60,15 @@ class ListFragment : Fragment() {
         animalList.apply {
             layoutManager=GridLayoutManager(context,2)
             adapter=listAdapter
+        }
+
+
+        refreshLayout.setOnRefreshListener {
+            animalList.visibility=View.GONE
+            textView.visibility=View.GONE
+            loadingView.visibility=View.VISIBLE
+            viewModel.refresh()
+            refreshLayout.isRefreshing=false
         }
     }
 
