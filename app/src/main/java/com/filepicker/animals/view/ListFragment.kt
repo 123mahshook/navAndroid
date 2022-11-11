@@ -67,7 +67,7 @@ class ListFragment : Fragment() {
             animalList.visibility=View.GONE
             textView.visibility=View.GONE
             loadingView.visibility=View.VISIBLE
-            viewModel.refresh()
+            viewModel.hardRefresh()
             refreshLayout.isRefreshing=false
         }
     }

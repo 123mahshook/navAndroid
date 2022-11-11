@@ -3,6 +3,7 @@ package com.filepicker.animals.view
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.Navigation
 import androidx.recyclerview.widget.RecyclerView
 import com.filepicker.animals.R
 import com.filepicker.animals.model.Animal
@@ -29,6 +30,12 @@ fun updateAnimalList(newAnimalList:List<Animal>){
     override fun onBindViewHolder(holder: AnimalViewHolder, position: Int) {
     holder.view.animalName.text =animalList[position].name
         holder.view.animalImage.loadImage(animalList[position].imageUrl, getProgressDrawable(holder.view.context))
+        holder.view.animalLayout.setOnClickListener{
+            val action = ListFragmentDirections.actionDetail(animalList[position])
+            Navigation.findNavController(holder.view).navigate(action)
+
+        }
+
     }
 
     override fun getItemCount()=animalList.size

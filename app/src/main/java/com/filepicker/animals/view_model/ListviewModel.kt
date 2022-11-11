@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import com.filepicker.animals.model.Animal
 import com.filepicker.animals.model.AnimalApiService
 import com.filepicker.animals.model.ApiKey
+import com.filepicker.animals.util.SharedPreferencesHelper
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.observers.DisposableSingleObserver
@@ -19,10 +20,26 @@ class ListviewModel(application: Application):AndroidViewModel(application) {
     private val disposable=CompositeDisposable()
     private val apiService=AnimalApiService()
 
+    private val prefs=SharedPreferencesHelper(getApplication())
+
+    private var invalidApiKey=false
+
     fun refresh(){
         loading.value=true
-        getKey()
+        invalidApiKey=false
+        val key=prefs.getApiKey()
+        if(key.isNullOrEmpty()){
+            getKey()
+        }else {
+            getAnimals(key)
+        }
+
         //getAnimals()
+    }
+
+    fun hardRefresh(){
+        loading.value=true
+        getKey()
     }
 
     private  fun getKey(){
@@ -36,6 +53,7 @@ class ListviewModel(application: Application):AndroidViewModel(application) {
                             loadError.value=true
                             loading.value=false
                         }else{
+                            prefs.saveApiKey(key.key)
                             getAnimals(key.key)
                         }
                     }
@@ -67,9 +85,15 @@ class ListviewModel(application: Application):AndroidViewModel(application) {
 
                     override fun onError(e: Throwable) {
                         e.printStackTrace()
-                        loading.value=false
-                        animals.value=null
-                        loadError.value=true
+                        if(!invalidApiKey){
+                            invalidApiKey=true
+                            getKey()
+                        }else{
+                            loading.value=false
+                            animals.value=null
+                            loadError.value=true
+                        }
+
                     }
 
                 })
