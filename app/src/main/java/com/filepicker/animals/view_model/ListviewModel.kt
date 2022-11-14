@@ -3,6 +3,10 @@ package com.filepicker.animals.view_model
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
+import com.filepicker.animals.di.AppModule
+import com.filepicker.animals.di.CONTEXT_APP
+import com.filepicker.animals.di.DaggerViewModelComponent
+import com.filepicker.animals.di.TypeOfContext
 import com.filepicker.animals.model.Animal
 import com.filepicker.animals.model.AnimalApiService
 import com.filepicker.animals.model.ApiKey
@@ -11,6 +15,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.observers.DisposableSingleObserver
 import io.reactivex.schedulers.Schedulers
+import javax.inject.Inject
 
 class ListviewModel(application: Application):AndroidViewModel(application) {
     val animals by lazy {MutableLiveData<List<Animal>>() }
@@ -18,11 +23,22 @@ class ListviewModel(application: Application):AndroidViewModel(application) {
     val loading by lazy{MutableLiveData<Boolean>()}
 
     private val disposable=CompositeDisposable()
-    private val apiService=AnimalApiService()
 
-    private val prefs=SharedPreferencesHelper(getApplication())
+    @Inject
+    lateinit var apiService: AnimalApiService
+
+    @Inject
+    @field:TypeOfContext(CONTEXT_APP)
+    lateinit var prefs: SharedPreferencesHelper
 
     private var invalidApiKey=false
+
+    init {
+        DaggerViewModelComponent.builder()
+            .appModule(AppModule(getApplication()))
+            .build()
+            .inject(this)
+    }
 
     fun refresh(){
         loading.value=true
